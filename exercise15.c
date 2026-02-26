@@ -1,25 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
-#define MAX_NUMBER_LINES 100
-#define MAX_LINESIZE 81
-#define FILENAME_MAX_LENGTH 3
+#define MAX_LINESIZE 100
+#define FILENAME_MAX_LENGTH 100
+#define MAX_ITEMS 40
 
 FILE *open_file(const char *name, const char *mode);
 int filename_input(char *name, int max_length);
 
+
+typedef struct menu_item_ {
+    char name[50];
+    double price;
+} menu_item;
+
+
 int main() {
-    char line[MAX_NUMBER_LINES][MAX_LINESIZE];
     char file_name[FILENAME_MAX_LENGTH];
     char mode1[] = "r";
-    char mode2[] = "w";
-    char mode3[] = "a";
-
-
     FILE *my_file;
-    int count_lines = 0;
+
+    menu_item max[MAX_ITEMS];
+    int count = 0;
+    char lines[MAX_LINESIZE];
+
 
     filename_input(file_name, FILENAME_MAX_LENGTH);
 
@@ -28,25 +33,16 @@ int main() {
         return 1;
     }
 
-    while (count_lines < MAX_NUMBER_LINES && fgets(line[count_lines], MAX_LINESIZE, my_file) != NULL) {
-        count_lines++;
-    }
-    fclose(my_file);
-
-    for (int i = 0; i < count_lines; i++) {
-        for (int j = 0; line[i][j] != '\0'; j++) {
-            line[i][j] = toupper(line[i][j]);
+    while (count < MAX_ITEMS && fgets(lines, MAX_LINESIZE, my_file) != NULL) {
+            if (sscanf(lines, " %49[^;]; %lf", max[count].name, &max[count].price) == 2) {
+                count++;
+            }
         }
-    }
-
-    my_file = open_file(file_name, mode3);
-    if (my_file == NULL) {
-        return 1;
-    }
-    for (int i = 0; i < count_lines; i++) {
-        fprintf(my_file, "%s", line[i]);
-    }
     fclose(my_file);
+
+    for (int i = 0; i < count; i++) {
+        printf("%8.2lf    %s\n", max[i].price, max[i].name);
+    }
 
     return 0;
 }
@@ -65,7 +61,9 @@ int filename_input(char *name, const int max_length) {
     return 0;
 }
 
-FILE *open_file(const char *name, const char *mode) {
+
+
+FILE *open_file(const char *name, const char *mode){
     FILE *file = fopen(name, mode);
 
     if (file == NULL) {
