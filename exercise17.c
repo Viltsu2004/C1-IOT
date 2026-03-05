@@ -6,6 +6,8 @@
 
 #define MAX_PASSWORD 32
 #define MAX_GENERATED_PASSWORD 65
+#define MAX_HEX 126
+#define MIN_HEX 33
 
 
 bool generator(char *new_password, int size, const char *word);
@@ -52,14 +54,13 @@ bool generator(char *new_password, int size, const char *word) {
     char new_password_array[size];
     int j = 0;
 
-    if (strlen(word) > size/2-1 || word == NULL) {
-        printf("not");
+    if (strlen(word) > MAX_PASSWORD || word == NULL) {
         return false;
     }
-    new_password_array[j] = (char)(rand() % 94 +33);
+    new_password_array[j] = (char)(rand() % (MAX_HEX - MIN_HEX + 1) + MIN_HEX);
 
-    for (int i=0; i<strlen(word)*2+1; i++) {
-        new_password_array[j++] = (char)(rand() % 94 +33);
+    for (int i=0; i<strlen(word); i++) {
+        new_password_array[j++] = (char)(rand() % (MAX_HEX - MIN_HEX + 1) + MIN_HEX);
         new_password_array[j++] = word[i];
     }
     new_password_array[j] = '\0';

@@ -24,14 +24,11 @@ int main() {
 
     while (strcmp(input, "end") != 0 ) {
         printf("Enter number or 'end' to stop entering a number: ");
-        if (fgets(input, sizeof(input), stdin) != NULL && input[strlen(input)] < LINE) {
-
+        if (fgets(input, sizeof(input), stdin) != NULL) {
             if (strchr(input, '\n') == NULL) {
                 int i;
                 while ((i = getchar()) != '\n' && i != EOF) {}
             }
-
-
             if (input[strlen(input) - 1] == '\n') {
                 input[strlen(input) - 1] = '\0';
             }
